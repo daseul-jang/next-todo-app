@@ -28,6 +28,12 @@ export default function TodoList({ id, title, isChecked, createdAt }: ITodo) {
     setModifiedText(e.target.value);
   };
 
+  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      modifyHandler();
+    }
+  };
+
   const modifyHandler = () => {
     dispatch(modifyTodo({ id, title: modifiedText }));
     setIsModified(false);
@@ -62,6 +68,7 @@ export default function TodoList({ id, title, isChecked, createdAt }: ITodo) {
                   type='text'
                   value={modifiedText}
                   onChange={onChange}
+                  onKeyDown={onKeyDown}
                   className='p-2 w-full'
                 />
               </div>

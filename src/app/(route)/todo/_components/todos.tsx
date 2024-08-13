@@ -59,7 +59,7 @@ export default function Todos() {
   };
 
   return (
-    <div className='flex flex-col items-center gap-2 w-full'>
+    <div className='flex flex-col items-center gap-5 w-full pt-8'>
       <div>
         <p className='text-lg'>
           <span className='text-orange-400'>{name}</span>의 TO DO 📝

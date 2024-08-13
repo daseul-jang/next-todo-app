@@ -16,7 +16,7 @@ export default function EnterName() {
 
   const onClick = () => {
     dispatch(addName(name));
-    router.push('/todo');
+    setTimeout(() => router.push('/todo'), 800);
   };
 
   return (
