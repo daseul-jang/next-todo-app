@@ -15,9 +15,7 @@ export default function EnterName() {
   };
 
   const onClick = () => {
-    console.log(name);
     dispatch(addName(name));
-    //localStorage.setItem('name', name);
     router.push('/todo');
   };
 
@@ -26,7 +24,7 @@ export default function EnterName() {
       <p className='text-3xl'>당신의 이름을 입력해주세요 💞</p>
       <div className='flex gap-2'>
         <input
-          className='focus:outline-none bg-transparent border-b-2 border-black text-lg'
+          className='focus:outline-none bg-transparent border-b-2 border-neutral-300 focus:border-orange-300 text-lg'
           type='text'
           value={name}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -34,7 +32,7 @@ export default function EnterName() {
           }
           onKeyDown={onKeyDown}
         />
-        <button className='bg-orange-400 p-2' onClick={onClick}>
+        <button className='bg-orange-100 p-3 rounded-lg' onClick={onClick}>
           들어가기
         </button>
       </div>

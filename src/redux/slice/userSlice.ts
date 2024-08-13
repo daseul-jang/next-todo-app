@@ -5,7 +5,7 @@ interface IUser {
 }
 
 const initUser: IUser = {
-  name: '',
+  name: null,
 };
 
 const userSlice = createSlice({
@@ -14,11 +14,18 @@ const userSlice = createSlice({
   reducers: {
     addName: (state, action) => {
       localStorage.setItem('name', action.payload);
-      state.name = localStorage.getItem('name');
+      state.name = action.payload;
+    },
+    removeName: (state) => {
+      localStorage.removeItem('name');
+      state.name = null;
+    },
+    setName: (state, action) => {
+      state.name = action.payload;
     },
   },
 });
 
-export const { addName } = userSlice.actions;
+export const { addName, removeName, setName } = userSlice.actions;
 
 export default userSlice.reducer;

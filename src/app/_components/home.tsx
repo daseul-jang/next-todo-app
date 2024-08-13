@@ -1,21 +1,23 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import EnterName from './enter-name';
 import Welcome from './welcome';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
+import { setName } from '@/redux/slice/userSlice';
 
 export default function Home() {
+  const dispatch = useDispatch();
   const name = useSelector((state: RootState) => state.user.name);
-  // const [name, setName] = useState<string | null>(null);
 
-  // useEffect(() => {
-  //   const storedName = localStorage.getItem('name');
-  //   setName(storedName);
-  // }, [name]);
+  useEffect(() => {
+    const storedName = localStorage.getItem('name');
 
-  console.log(name);
+    if (storedName) {
+      dispatch(setName(storedName));
+    }
+  }, [dispatch]);
 
   return <>{name ? <Welcome name={name} /> : <EnterName />}</>;
 }
