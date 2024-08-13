@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import NavBar from '@/components/navbar';
+import ReduxProvider from '@/providers/redux-provider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -17,12 +18,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en'>
-      <body className={inter.className}>
-        <NavBar />
-        <main className='min-h-screen max-w-screen-md w-full flex justify-center -mt-[60px] mx-auto'>
-          {children}
-        </main>
-      </body>
+      <ReduxProvider>
+        <body className={inter.className}>
+          <NavBar />
+          <main className='min-h-screen max-w-screen-md w-full flex justify-center -mt-[60px] mx-auto'>
+            {children}
+          </main>
+        </body>
+      </ReduxProvider>
     </html>
   );
 }

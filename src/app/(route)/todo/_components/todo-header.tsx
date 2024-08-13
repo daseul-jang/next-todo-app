@@ -1,24 +1,17 @@
 'use client';
 
+import { RootState } from '@/redux/store';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 export default function TodoHeader() {
   const router = useRouter();
-  const [name, setName] = useState<string | null>(null);
+  const name = useSelector((state: RootState) => state.user.name);
 
   useEffect(() => {
-    const storedName = localStorage.getItem('name');
-    setName(storedName);
-  }, [name]);
-
-  useEffect(() => {
-    name || router.back();
-  }, [name]);
-
-  if (!name) {
-    return <></>;
-  }
+    if (!name) router.replace('/');
+  }, []);
 
   return (
     <div>

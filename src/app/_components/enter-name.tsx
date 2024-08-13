@@ -1,8 +1,11 @@
+import { addName } from '@/redux/slice/userSlice';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 export default function EnterName() {
   const router = useRouter();
+  const dispatch = useDispatch();
   const [name, setName] = useState<string>('');
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -13,7 +16,8 @@ export default function EnterName() {
 
   const onClick = () => {
     console.log(name);
-    localStorage.setItem('name', name);
+    dispatch(addName(name));
+    //localStorage.setItem('name', name);
     router.push('/todo');
   };
 

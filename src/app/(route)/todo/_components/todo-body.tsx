@@ -18,11 +18,16 @@ const todoInit: ITodoItem = {
 };
 
 export default function TodoBody() {
-  const storedTodos = localStorage.getItem('todoList');
   const [todoTitle, setTodoTitle] = useState<string>('');
-  const [todoList, setTodoList] = useState<ITodoItem[]>(
-    storedTodos ? JSON.parse(storedTodos) : []
-  );
+  const [todoList, setTodoList] = useState<ITodoItem[]>([]);
+
+  useEffect(() => {
+    const storedTodos = localStorage.getItem('todoList');
+
+    if (storedTodos) {
+      setTodoList(JSON.parse(storedTodos));
+    }
+  }, []);
 
   useEffect(() => {
     localStorage.setItem('todoList', JSON.stringify(todoList));
