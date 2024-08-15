@@ -35,7 +35,7 @@ export default function TodoList({ todo, isLast }: ITodoListProps) {
 
   const isModifyHandler = () => {
     if (todo.isChecked) {
-      alert('체크된 아이템은 수정할 수 없습니다.');
+      alert('체크 된 할 일은 수정할 수 없습니다.');
       return;
     }
 
