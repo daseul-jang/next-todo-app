@@ -1,7 +1,7 @@
 'use client';
 
 import { removeTodos } from '@/redux/slice/todoSlice';
-import { removeName } from '@/redux/slice/userSlice';
+import { removeName } from '@/redux/slice/user-slice';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';

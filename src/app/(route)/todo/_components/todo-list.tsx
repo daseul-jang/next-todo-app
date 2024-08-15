@@ -3,7 +3,7 @@ import {
   deleteTodo,
   ITodo,
   modifyTodo,
-} from '@/redux/slice/todoSlice';
+} from '@/redux/slice/todo-slice';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 

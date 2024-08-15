@@ -1,7 +1,7 @@
 'use client';
 
-import { addTodos, getTodos } from '@/redux/slice/todoSlice';
-import { setName } from '@/redux/slice/userSlice';
+import { addTodos, getTodos } from '@/redux/slice/todo-slice';
+import { setName } from '@/redux/slice/user-slice';
 import { RootState } from '@/redux/store';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';

@@ -1,4 +1,4 @@
-import { addName } from '@/redux/slice/userSlice';
+import { addName } from '@/redux/slice/user-slice';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';

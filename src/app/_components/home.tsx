@@ -5,7 +5,7 @@ import EnterName from './enter-name';
 import Welcome from './welcome';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
-import { setName } from '@/redux/slice/userSlice';
+import { setName } from '@/redux/slice/user-slice';
 
 export default function Home() {
   const dispatch = useDispatch();
