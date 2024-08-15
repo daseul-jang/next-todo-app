@@ -7,10 +7,15 @@ import {
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-export default function TodoList({ id, title, isChecked, createdAt }: ITodo) {
+interface ITodoListProps {
+  todo: ITodo;
+  isLast: boolean;
+}
+
+export default function TodoList({ todo, isLast }: ITodoListProps) {
   const dispatch = useDispatch();
   const [isModified, setIsModified] = useState(false);
-  const [modifiedText, setModifiedText] = useState(title);
+  const [modifiedText, setModifiedText] = useState(todo.title);
   const inputRef = useRef<HTMLInputElement>(null);
 
   // isModified가 true일 때 입력 박스에 포커스를 주고 커서를 끝으로 이동
@@ -35,29 +40,32 @@ export default function TodoList({ id, title, isChecked, createdAt }: ITodo) {
   };
 
   const modifyHandler = () => {
-    dispatch(modifyTodo({ id, title: modifiedText }));
+    dispatch(modifyTodo({ id: todo.id, title: modifiedText }));
     setIsModified(false);
   };
 
   return (
-    <div className='w-full flex flex-col min-h-24'>
-      <div className='flex justify-between items-center text-sm p-2 rounded-t-lg bg-orange-200'>
-        <div className='flex gap-2'>
-          <span>{id}</span>
-          <span>{createdAt}</span>
-        </div>
-        <div className='flex gap-1'>
-          <button onClick={() => setIsModified((prev) => !prev)}>수정</button>
-          <button onClick={() => dispatch(deleteTodo(id))}>삭제</button>
-        </div>
-      </div>
-      <div className='flex items-center gap-3 p-3 bg-white rounded-b-lg h-full shadow-lg'>
+    <div
+      className={`w-full flex flex-col justify-center min-h-24 bg-white px-2 ${
+        !isLast && 'border-b border-orange-200'
+      }`}
+    >
+      <div className='flex justify-between items-center text-sm px-3 rounded-t-lg pt-3'>
         <div>
           <input
             type='checkbox'
-            checked={isChecked}
-            onChange={() => dispatch(checkTodo(id))}
+            checked={todo.isChecked}
+            onChange={() => dispatch(checkTodo(todo.id))}
           />
+        </div>
+        <div className='flex gap-1'>
+          <button onClick={() => setIsModified((prev) => !prev)}>수정</button>
+          <button onClick={() => dispatch(deleteTodo(todo.id))}>삭제</button>
+        </div>
+      </div>
+      <div className='flex items-center gap-3 p-3 h-full'>
+        <div className=''>
+          <span>{todo.id}</span>
         </div>
         <div className='text-xl w-full'>
           {isModified ? (
@@ -82,8 +90,10 @@ export default function TodoList({ id, title, isChecked, createdAt }: ITodo) {
               </div>
             </div>
           ) : (
-            <span className={`${isChecked && 'line-through text-neutral-400'}`}>
-              {title}
+            <span
+              className={`${todo.isChecked && 'line-through text-neutral-400'}`}
+            >
+              {todo.title}
             </span>
           )}
         </div>

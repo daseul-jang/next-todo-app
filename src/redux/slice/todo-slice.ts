@@ -1,80 +1,102 @@
+import { formatDate } from '@/utils/date-utils';
 import { createSlice } from '@reduxjs/toolkit';
 
 export interface ITodo {
   id: number;
   title: string;
   isChecked: boolean;
-  createdAt: string;
+  createdAt: Date;
 }
 
-const initTodos: ITodo[] = [];
+export interface ITodoGroup {
+  date: Date;
+  todos: ITodo[];
+}
+
+const initTodoGroups: ITodoGroup[] = [];
 
 const todoSlice = createSlice({
   name: 'todo',
-  initialState: initTodos,
+  initialState: initTodoGroups,
   reducers: {
     addTodos: (state, action) => {
       const newTodo: ITodo = {
         id: action.payload.id,
         title: action.payload.title,
         isChecked: false,
-        createdAt: formatDate(new Date()), // 포맷된 날짜 저장
+        createdAt: new Date(),
       };
 
-      state.push(newTodo);
+      const existingGroup = state.find(
+        (group) => group.date === newTodo.createdAt
+      );
 
-      localStorage.setItem('todoList', JSON.stringify(state));
+      if (existingGroup) {
+        // 해당 그룹에 새로운 투두 추가
+        existingGroup.todos.push(newTodo);
+      } else {
+        // 새로운 그룹을 생성 후 추가
+        state.push({
+          date: newTodo.createdAt,
+          todos: [newTodo],
+        });
+      }
+
+      localStorage.setItem('todoGroups', JSON.stringify(state));
     },
     removeTodos: () => {
-      localStorage.removeItem('todoList');
+      localStorage.removeItem('todoGroups');
       return [];
     },
     getTodos: () => {
-      const storedTodos = localStorage.getItem('todoList');
+      const storedTodos = localStorage.getItem('todoGroups');
       return storedTodos ? JSON.parse(storedTodos) : [];
     },
     checkTodo: (state, action) => {
-      const newTodos = state.map((todo) =>
-        todo.id === action.payload
-          ? { ...todo, isChecked: !todo.isChecked }
-          : todo
-      );
+      const newTodos = state.map((group) => ({
+        ...group,
+        todos: group.todos.map((todo) =>
+          todo.id === action.payload
+            ? { ...todo, isChecked: !todo.isChecked }
+            : todo
+        ),
+      }));
 
-      localStorage.setItem('todoList', JSON.stringify(newTodos));
+      localStorage.setItem('todoGroups', JSON.stringify(newTodos));
 
       return newTodos;
     },
     modifyTodo: (state, action) => {
-      const newTodos = state.map((todo) =>
-        todo.id === action.payload.id
-          ? {
-              ...todo,
-              title: action.payload.title,
-            }
-          : todo
-      );
+      const newTodos = state.map((group) => ({
+        ...group,
+        todos: group.todos.map((todo) =>
+          todo.id === action.payload.id
+            ? {
+                ...todo,
+                title: action.payload.title,
+              }
+            : todo
+        ),
+      }));
 
-      localStorage.setItem('todoList', JSON.stringify(newTodos));
+      localStorage.setItem('todoGroups', JSON.stringify(newTodos));
 
       return newTodos;
     },
     deleteTodo: (state, action) => {
-      const newTodos = state.filter((todo) => todo.id !== action.payload);
+      const newTodos = state
+        .map((group) => ({
+          ...group,
+          todos: group.todos.filter((todo) => todo.id !== action.payload), // 해당 투두 삭제
+        }))
+        .filter((group) => group.todos.length > 0); // todos가 비어있지 않은 그룹만 남김
 
-      localStorage.setItem('todoList', JSON.stringify(newTodos));
+      localStorage.setItem('todoGroups', JSON.stringify(newTodos));
 
       return newTodos;
     },
   },
 });
-
-const formatDate = (date: Date): string => {
-  const year = date.getFullYear().toString().slice(-2);
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-
-  return `${year}/${month}/${day}`;
-};
 
 export const {
   addTodos,
