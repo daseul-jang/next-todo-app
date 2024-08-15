@@ -1,14 +1,14 @@
 'use client';
 
-import { addTodos, getTodos, ITodoGroup } from '@/redux/slice/todo-slice';
+import { addTodos, getTodos } from '@/redux/slice/todo-slice';
 import { setName } from '@/redux/slice/user-slice';
 import { RootState } from '@/redux/store';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import TodoList from './todo-list';
 import { formatDate } from '@/utils/date-utils';
 import TodoGroup from './todo-group';
+import { generatePDF, generateTestData } from '@/utils/todo-utils';
 
 export default function Todos() {
   const dispatch = useDispatch();
@@ -32,49 +32,7 @@ export default function Todos() {
 
   // 테스트 데이터 세팅
   useEffect(() => {
-    const storedTodoGroups = localStorage.getItem('todoGroups');
-
-    // 로컬스토리지에 todoGroups가 없을 때만 테스트 데이터를 설정합니다.
-    if (!storedTodoGroups) {
-      const testTodos: ITodoGroup[] = [
-        {
-          date: new Date('2024-08-01T12:00:00'),
-          todos: [
-            {
-              id: 1,
-              title: '테스트1',
-              isChecked: false,
-              createdAt: new Date('2024-08-01T12:00:00'),
-            },
-            {
-              id: 2,
-              title: '테스트2',
-              isChecked: false,
-              createdAt: new Date('2024-08-01T12:00:00'),
-            },
-            {
-              id: 3,
-              title: '테스트3',
-              isChecked: false,
-              createdAt: new Date('2024-08-01T12:00:00'),
-            },
-          ],
-        },
-        {
-          date: new Date('2024-08-05T12:00:00'),
-          todos: [
-            {
-              id: 4,
-              title: '테스트4',
-              isChecked: false,
-              createdAt: new Date('2024-08-05T12:00:00'),
-            },
-          ],
-        },
-      ];
-
-      localStorage.setItem('todoGroups', JSON.stringify(testTodos));
-    }
+    generateTestData();
   }, []);
 
   if (!name) {
@@ -94,11 +52,16 @@ export default function Todos() {
   const onClick = () => {
     let newId = 1;
 
-    todoGroups.forEach((group) => {
-      if (group.todos.length > 0) {
-        newId = Math.max(...group.todos.map((todo) => todo.id)) + 1;
-      }
-    });
+    const todoGroup = todoGroups.find(
+      (group) => group.date === formatDate(new Date())
+    );
+
+    if (todoGroup) {
+      newId =
+        todoGroup.todos.length > 0
+          ? Math.max(...todoGroup.todos.map((todo) => todo.id)) + 1
+          : newId;
+    }
 
     const newTodo = {
       id: newId,
@@ -138,9 +101,9 @@ export default function Todos() {
         </div>
         <div className='flex flex-col gap-4 w-full min-h-52'>
           <div className='flex justify-end px-2'>
-            <button>PDF 저장</button>
+            <button onClick={() => generatePDF(name)}>PDF 저장</button>
           </div>
-          <div className=''>
+          <div className='' id='todos'>
             {todoGroups.length > 0 ? (
               todoGroups?.map((group) => (
                 <TodoGroup

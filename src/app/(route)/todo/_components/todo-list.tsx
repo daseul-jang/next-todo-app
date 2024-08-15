@@ -40,7 +40,13 @@ export default function TodoList({ todo, isLast }: ITodoListProps) {
   };
 
   const modifyHandler = () => {
-    dispatch(modifyTodo({ id: todo.id, title: modifiedText }));
+    dispatch(
+      modifyTodo({
+        id: todo.id,
+        title: modifiedText,
+        createdAt: todo.createdAt,
+      })
+    );
     setIsModified(false);
   };
 
@@ -55,12 +61,20 @@ export default function TodoList({ todo, isLast }: ITodoListProps) {
           <input
             type='checkbox'
             checked={todo.isChecked}
-            onChange={() => dispatch(checkTodo(todo.id))}
+            onChange={() =>
+              dispatch(checkTodo({ id: todo.id, createdAt: todo.createdAt }))
+            }
           />
         </div>
         <div className='flex gap-1'>
           <button onClick={() => setIsModified((prev) => !prev)}>수정</button>
-          <button onClick={() => dispatch(deleteTodo(todo.id))}>삭제</button>
+          <button
+            onClick={() =>
+              dispatch(deleteTodo({ id: todo.id, createdAt: todo.createdAt }))
+            }
+          >
+            삭제
+          </button>
         </div>
       </div>
       <div className='flex items-center gap-3 p-3 h-full'>

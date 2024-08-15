@@ -5,11 +5,11 @@ export interface ITodo {
   id: number;
   title: string;
   isChecked: boolean;
-  createdAt: Date;
+  createdAt: string;
 }
 
 export interface ITodoGroup {
-  date: Date;
+  date: string;
   todos: ITodo[];
 }
 
@@ -24,7 +24,7 @@ const todoSlice = createSlice({
         id: action.payload.id,
         title: action.payload.title,
         isChecked: false,
-        createdAt: new Date(),
+        createdAt: formatDate(new Date()),
       };
 
       const existingGroup = state.find(
@@ -53,47 +53,76 @@ const todoSlice = createSlice({
       return storedTodos ? JSON.parse(storedTodos) : [];
     },
     checkTodo: (state, action) => {
-      const newTodos = state.map((group) => ({
-        ...group,
-        todos: group.todos.map((todo) =>
-          todo.id === action.payload
-            ? { ...todo, isChecked: !todo.isChecked }
-            : todo
-        ),
-      }));
+      const newTodos = state.map((group) => {
+        if (group.date === action.payload.createdAt) {
+          return {
+            ...group,
+            todos: group.todos.map((todo) =>
+              todo.id === action.payload.id
+                ? { ...todo, isChecked: !todo.isChecked }
+                : todo
+            ),
+          };
+        }
+
+        return group;
+      });
 
       localStorage.setItem('todoGroups', JSON.stringify(newTodos));
 
       return newTodos;
     },
     modifyTodo: (state, action) => {
-      const newTodos = state.map((group) => ({
-        ...group,
-        todos: group.todos.map((todo) =>
-          todo.id === action.payload.id
-            ? {
-                ...todo,
-                title: action.payload.title,
-              }
-            : todo
-        ),
-      }));
+      const newTodos = state.map((group) => {
+        if (group.date === action.payload.createdAt) {
+          return {
+            ...group,
+            todos: group.todos.map((todo) =>
+              todo.id === action.payload.id
+                ? {
+                    ...todo,
+                    title: action.payload.title,
+                  }
+                : todo
+            ),
+          };
+        }
+
+        return group;
+      });
 
       localStorage.setItem('todoGroups', JSON.stringify(newTodos));
 
       return newTodos;
     },
     deleteTodo: (state, action) => {
-      const newTodos = state
-        .map((group) => ({
-          ...group,
-          todos: group.todos.filter((todo) => todo.id !== action.payload), // 해당 투두 삭제
-        }))
-        .filter((group) => group.todos.length > 0); // todos가 비어있지 않은 그룹만 남김
+      const selectedGroupIndex = state.findIndex(
+        (group) => group.date === action.payload.createdAt
+      );
 
-      localStorage.setItem('todoGroups', JSON.stringify(newTodos));
+      if (selectedGroupIndex !== -1) {
+        const filterTodos = state[selectedGroupIndex].todos.filter(
+          (todo) => todo.id !== action.payload.id
+        );
 
-      return newTodos;
+        const newTodos = state
+          .map((group, index) => {
+            if (index === selectedGroupIndex) {
+              return {
+                ...group,
+                todos: filterTodos,
+              };
+            }
+            return group;
+          })
+          .filter((group) => group.todos.length > 0); // todos가 비어있지 않은 그룹만 남김
+
+        localStorage.setItem('todoGroups', JSON.stringify(newTodos));
+
+        return newTodos;
+      }
+
+      return state;
     },
   },
 });
