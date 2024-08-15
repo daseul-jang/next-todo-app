@@ -33,6 +33,15 @@ export default function TodoList({ todo, isLast }: ITodoListProps) {
     setModifiedText(e.target.value);
   };
 
+  const isModifyHandler = () => {
+    if (todo.isChecked) {
+      alert('체크된 아이템은 수정할 수 없습니다.');
+      return;
+    }
+
+    setIsModified((prev) => !prev);
+  };
+
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       modifyHandler();
@@ -67,7 +76,7 @@ export default function TodoList({ todo, isLast }: ITodoListProps) {
           />
         </div>
         <div className='flex gap-1'>
-          <button onClick={() => setIsModified((prev) => !prev)}>수정</button>
+          <button onClick={isModifyHandler}>수정</button>
           <button
             onClick={() =>
               dispatch(deleteTodo({ id: todo.id, createdAt: todo.createdAt }))
