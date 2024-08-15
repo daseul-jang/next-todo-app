@@ -4,7 +4,7 @@ import { addTodos, getTodos } from '@/redux/slice/todo-slice';
 import { setName } from '@/redux/slice/user-slice';
 import { RootState } from '@/redux/store';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { formatDate } from '@/utils/date-utils';
 import TodoGroup from './todo-group';
@@ -31,7 +31,7 @@ export default function Todos() {
   }, [dispatch, router]);
 
   // 테스트 데이터 세팅
-  useEffect(() => {
+  useLayoutEffect(() => {
     generateTestData();
   }, []);
 
